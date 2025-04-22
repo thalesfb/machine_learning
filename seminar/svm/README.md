@@ -69,7 +69,7 @@ Esses conceitos garantem que o SVM seja robusto, flexível e eficaz em diferente
 
 ### Dataset Escolhido: [Wisconsin Breast Cancer Dataset](https://archive.ics.uci.edu/dataset/17/breast+cancer+wisconsin+diagnostic)
 
-#### Descrição:
+#### Descrição
 
 - **Problema**: Classificação entre tumores benignos e malignos.
 - **Variáveis**: 30 características numéricas extraídas de imagens digitalizadas.
@@ -83,7 +83,7 @@ Esses conceitos garantem que o SVM seja robusto, flexível e eficaz em diferente
 1. **Carregamento e análise exploratória dos dados**
 2. **Pré-processamento**: tratamento de dados faltantes e normalização com StandardScaler
 3. **Divisão do dataset**: treino (80%) e teste (20%), validação cruzada k-fold
-4. **Treinamento do modelo**: kernel RBF, ajuste de hiperparâmetros com GridSearchCV (C e gamma)
+4. **Treinamento do modelo**: Ajuste de hiperparâmetros com GridSearchCV (C, gamma e kernel)
 5. **Avaliação**: acurácia, matriz de confusão, precisão, recall, F1-score, AUC-ROC
 6. **Discussão dos resultados**: análise crítica e sugestões de melhorias
 
@@ -114,8 +114,8 @@ Esses conceitos garantem que o SVM seja robusto, flexível e eficaz em diferente
 
 ## Artefatos e Resultados
 
-- **Apresentação**: [Apresentação SVM](https://docs.google.com/presentation/d/1KPVmIJ24JEXdTuvchBfo1M4ny5204INyuXNw5aXr4Pg/edit#slide=id.p)
-- **Notebook**: [svm.ipynb](https://github.com/thalesfb/machine_learning/blob/main/seminar/svm/svm.ipynb)
+- [**Apresentação SVM**](https://docs.google.com/presentation/d/1KPVmIJ24JEXdTuvchBfo1M4ny5204INyuXNw5aXr4Pg/edit#slide=id.p)
+- [**Notebook**](https://github.com/thalesfb/machine_learning/blob/main/seminar/svm/svm.ipynb)
 
 ## Referências
 
