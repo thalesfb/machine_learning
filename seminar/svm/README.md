@@ -112,6 +112,10 @@ Esses conceitos garantem que o SVM seja robusto, flexível e eficaz em diferente
 - Explore a importância das features usando métodos de seleção de variáveis.
 - Analise o impacto de diferentes estratégias de normalização.
 
+## Artefatos e Resultados
+
+- **Apresentação**: [Apresentação SVM](https://docs.google.com/presentation/d/1KPVmIJ24JEXdTuvchBfo1M4ny5204INyuXNw5aXr4Pg/edit#slide=id.p)
+- **Notebook**: [svm.ipynb](https://github.com/thalesfb/machine_learning/blob/main/seminar/svm/svm.ipynb)
 
 ## Referências
 
