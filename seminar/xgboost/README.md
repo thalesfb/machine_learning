@@ -1,4 +1,5 @@
-# 🌟 Seminário – **XGBoost** do Zero ao Avançado  
+# 🌟 Seminário – **XGBoost**
+
 <sub>Experimento prático no Wisconsin Breast Cancer Dataset</sub>
 
 ---
@@ -234,8 +235,8 @@ jupyter lab  # ou VSCode / Google Colab
 
 | Arquivo              | Descrição                                   |
 | -------------------- | ------------------------------------------- |
-| `xgboost.ipynb`      | Notebook completo com códigos e gráficos    |
-| `slides_xgboost.pdf` | Slides de 15 min usados na apresentação     |
+| [xgboost.ipynb](https://github.com/thalesfb/machine_learning/tree/main/seminar/xgboost)      | Notebook completo com códigos e gráficos    |
+| [Slides](https://docs.google.com/presentation/d/1CKbIO8EjqNqdgZhZIB3_YTu7wHhXNLksIFju-FgbMLk/edit#slide=id.p) | Slides de 15 min usados na apresentação     |
 
 ## 📚 Referências
 
