@@ -1,5 +1,6 @@
-# 🌟 Seminário – **XGBoost**  
-<sub>Experimento Prático no *Wisconsin Breast Cancer Dataset* · Versão Notebook: 13 mai 2025</sub>
+# 🌟 Seminário – **XGBoost**
+
+Experimento Prático no *Wisconsin Breast Cancer Dataset*
 
 ---
 
@@ -23,7 +24,7 @@
 
 ## Motivação
 
-> **Objetivo principal:** mostrar, na prática, todo o _pipeline_ com **XGBoost**, compará-lo ao SVM (seminário anterior) e discutir resultados, interpretabilidade e trade-offs de uso em produção.
+> **Objetivo principal:** mostrar, na prática, todo o *pipeline* com **XGBoost**, compará-lo ao SVM (seminário anterior) e discutir resultados, interpretabilidade e trade-offs de uso em produção.
 
 ---
 
@@ -37,8 +38,10 @@ O **XGBoost** (eXtreme Gradient Boosting) implementa *gradient boosting* com:
 
 ### Função objetivo
 
-$$
-\mathcal{L}(\Theta)=\sum_{i=1}^{n} l\!\bigl(y_i,\hat{y}_i\bigr)+\sum_{k=1}^{K}\Omega(f_k), \\ Onde: \quad \Omega(f)=\gamma T + \tfrac{\lambda}{2}\lVert w\rVert^{2} $$
+```math
+
+\mathcal{L}(\theta)=\sum_{i=1}^{n} l\!\bigl(y_i,\hat{y}_i\bigr)+\sum_{k=1}^{K}\Omega(f_k), \\ Onde: \quad \Omega(f)=\gamma T + \tfrac{\lambda}{2}\lVert w\rVert^{2}
+```
 
 | Parâmetro            | Papel                                              | Pontos de partida |
 |----------------------|----------------------------------------------------|-------------------|
@@ -53,6 +56,7 @@ $$
 ---
 
 ## Dataset & Estratificação
+
 - **Fonte:** *Breast Cancer Wisconsin* (`sklearn.datasets.load_breast_cancer`)  
 - **Classes:** 0 = Maligno · 1 = Benigno  
 - **Estratificação** garantiu a mesma proporção de classes em treino e teste:
@@ -65,10 +69,13 @@ $$
 ---
 
 ## Análise Exploratória (EDA)
+
 ```python
+
 import seaborn as sns, matplotlib.pyplot as plt
 sns.countplot(x='target', data=df); plt.title('Distribuição das Classes')
 ```
+
 - Correlações fortes entre `mean_*` e `worst_*`.  
 - Nenhum valor ausente.  
 - Algumas features altamente colineares → regularização lida bem, mas vale monitorar.
@@ -76,27 +83,33 @@ sns.countplot(x='target', data=df); plt.title('Distribuição das Classes')
 ---
 
 ## Pré-processamento
+
 ```python
 from sklearn.preprocessing import StandardScaler
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 ```
+
 > *Embora árvores não exijam escala, mantivemos para comparabilidade com o SVM.*
 
 ---
 
 ## Particionamento Estratificado
+
 ```python
 from sklearn.model_selection import StratifiedShuffleSplit
 sss = StratifiedShuffleSplit(n_splits=1, test_size=0.111, random_state=42)
 ```
+
 - Proporções conservadas (ver tabela acima).  
 - `random_state` fixado → reprodutibilidade.
 
 ---
 
 ## Baseline & Tuning
+
 ### Baseline rápido
+
 ```python
 from xgboost import XGBClassifier
 clf0 = XGBClassifier(
@@ -106,6 +119,7 @@ clf0.fit(X_train, y_train)
 ```
 
 ### Tuning com `RandomizedSearchCV`
+
 ```python
 param_grid = { ... }  # ver notebook
 cv = StratifiedKFold(10, shuffle=True, random_state=42)
@@ -122,6 +136,7 @@ best_clf = search.best_estimator_
 ---
 
 ## Avaliação
+
 ```python
 from sklearn.metrics import (classification_report, confusion_matrix,
                              RocCurveDisplay, PrecisionRecallDisplay)
@@ -131,6 +146,7 @@ print(classification_report(y_test, y_pred, digits=4))
 RocCurveDisplay.from_estimator(best_clf, X_test, y_test)
 PrecisionRecallDisplay.from_estimator(best_clf, X_test, y_test)
 ```
+
 | Métrica  | Valor |
 |----------|-------|
 | AUC-ROC  | **0.99** |
@@ -143,29 +159,35 @@ Confusion Matrix: 2 FP · 3 FN.
 ---
 
 ## Interpretabilidade
+
 ### Importância de Features nativa
+
 ```python
 from xgboost import plot_importance
 plot_importance(best_clf, max_num_features=10)
 ```
+
 ### SHAP
+
 ```python
 import shap
 explainer = shap.TreeExplainer(best_clf)
 shap_vals = explainer.shap_values(X_test)
 shap.summary_plot(shap_vals, X_test, plot_type="dot")
 ```
+
 - `worst_area`, `worst_radius` e `worst_concave_points` dominam a contribuição.  
 - Valores altos dessas variáveis aumentam probabilidade de maligno.
 
 ---
 
 ## Reflexão Crítica
+
 | Questão                           | Insight |
 |----------------------------------|---------|
 | **Overfitting**                  | Não foi observado: *early stopping* + regularização mantiveram gap < 1 pp entre treino e validação. |
 | **Comparação com SVM (seminário)** | XGBoost ↓ AUC (-0.0264), ↓ tempo de predição (~4×). |
-| **Limitações**                   | Tuning extenso; riscos de _data leakage_ se _pipeline_ não for bem fechado. |
+| **Limitações**                   | Tuning extenso; riscos de *data leakage* se *pipeline* não for bem fechado. |
 | **Próximos Passos**              | LightGBM / CatBoost; *stacking* com SVM; calibração de probabilidades (`CalibratedClassifierCV`). |
 
 ---
@@ -190,6 +212,7 @@ jupyter lab xgboost.ipynb
 ---
 
 ## Artefatos
+
 | Arquivo | Propósito |
 |---------|-----------|
 | [**`xgboost.ipynb`**](./xgboost.ipynb) | Notebook completo (código + gráficos). |
