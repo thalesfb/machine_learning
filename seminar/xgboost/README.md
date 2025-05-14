@@ -40,7 +40,13 @@ O **XGBoost** (eXtreme Gradient Boosting) implementa *gradient boosting* com:
 
 ```math
 
-\mathcal{L}(\theta)=\sum_{i=1}^{n} l\!\bigl(y_i,\hat{y}_i\bigr)+\sum_{k=1}^{K}\Omega(f_k), \\ Onde: \quad \Omega(f)=\gamma T + \tfrac{\lambda}{2}\lVert w\rVert^{2}
+\mathcal{L}(\Theta)=\sum_{i=1}^{n} l\!\bigl(y_i,\hat{y}_i\bigr)+\sum_{k=1}^{K}\Omega(f_k)
+```
+
+Onde:
+
+```math
+\quad \Omega(f)=\gamma T + \tfrac{\lambda}{2}\lVert w\rVert^{2}
 ```
 
 | Parâmetro            | Papel                                              | Pontos de partida |
