@@ -9,16 +9,34 @@ Este repositório contém notebooks e scripts relacionados a diferentes técnica
 ### 🖼️ Redes Neurais Convolucionais (CNN)
 
 - [`stl-10_classification.ipynb`](./cnn/stl-10_classification.ipynb): Implementação de classificação de imagens usando o dataset STL-10 com CNN LeNet-5.
+  - Modelos treinados: [`best_model.h5`](./cnn/best_model.h5), [`efficientnet_fine_tuned.h5`](./cnn/efficientnet_fine_tuned.h5), [`efficientnet_initial.h5`](./cnn/efficientnet_initial.h5)
+  - Referência: [`Lecun98.pdf`](./cnn/Lecun98.pdf) (Artigo original LeNet-5)
 
-### 🧠 Redes Neurais Artificiais (ANN)
+### 🧠 Redes Neurais Artificiais (ANN) e Modelos Clássicos
 
 - [`cancer.ipynb`](./ann/cancer.ipynb): Aplicação de redes neurais para classificação de câncer.
 - [`diabetes.ipynb`](./ann/diabetes.ipynb): Implementação de redes neurais para previsão de diabetes.
-- [`heart_disease.ipynb`](./ann/heart_disease.ipynb): Implementação de redes neurais para previsão de doenças cardíacas.
+- [`heart_disease.ipynb`](./ann/heart_disease.ipynb): Implementação de redes neurais para previsão de doenças cardíacas (dataset: [`ann/heart.csv`](./ann/heart.csv)).
+- [`AM_Doença_no_Coração_Naive_Bayes.ipynb`](./ann/AM_Doença_no_Coração_Naive_Bayes.ipynb): Classificação de doenças cardíacas utilizando Naive Bayes (dataset: [`ann/heart.csv`](./ann/heart.csv)).
+- [`AM_Naive_Bayes_Experimento_Prático.ipynb`](./ann/AM_Naive_Bayes_Experimento_Prático.ipynb): Experimentos práticos com o algoritmo Naive Bayes.
 
-### 📚 Material Educacional
+### 📚 Material Educacional e Atividades
 
 - [`introduction.ipynb`](./introduction.ipynb): Notebook com exercícios de revisão de conceitos de machine learning.
+- [`AM_Atividade_Avaliativa_1.ipynb`](./AM_Atividade_Avaliativa_1.ipynb): Atividade avaliativa sobre Machine Learning.
+
+### 🎓 Seminários
+
+- **SVM (Support Vector Machines)**
+
+  - [`svm.ipynb`](./seminar/svm/svm.ipynb): Notebook com a implementação e estudo de SVM.
+  - [`README.md`](./seminar/svm/README.md): Detalhes específicos do seminário de SVM.
+
+- **XGBoost**
+
+  - [`xgboost.ipynb`](./seminar/xgboost/xgboost.ipynb): Notebook principal com a implementação e estudo de XGBoost.
+  - [`XGBoost_exemplo.ipynb`](./seminar/xgboost/XGBoost_exemplo.ipynb): Exemplo prático de uso do XGBoost.
+  - [`README.md`](./seminar/xgboost/README.md): Detalhes específicos do seminário de XGBoost.
 
 ### 🧪 Dados de Teste
 
@@ -27,12 +45,13 @@ Este repositório contém notebooks e scripts relacionados a diferentes técnica
   - Logs de processamento
   - Arquivos de saída em Excel
   - Scripts de visualização de dados (`visualization.py`)
+  - Dados brutos em `test/data/`
 
 ## 🛠️ Bibliotecas Utilizadas
 
 Este projeto utiliza as seguintes tecnologias:
 
-- **Ciência de Dados**: pandas, numpy, scikit-learn
+- **Ciência de Dados**: pandas, numpy, scikit-learn, xgboost
 - **Visualização**: matplotlib, seaborn, plotly
 - **Deep Learning**: keras, tensorflow
 - **Processamento de Imagens**: OpenCV
