@@ -41,14 +41,16 @@ O **XGBoost** (“eXtreme Gradient Boosting”) é uma técnica poderosa baseada
 ### 🧮 1.2 Matemática Essencial
 
 $$
+
 \begin{aligned}
-\mathrm{Obj}(\Theta)
+\mathrm{Obj}(\theta)
 &= \sum_{i=1}^{n} l\bigl(y_i,\hat{y}_i\bigr)
-    + \sum_{k=1}^{K}\Omega(f_k),\\
+    + \sum_{k=1}^{K}\omega(f_k),\\
 Onde: \\
-\Omega(f)
-&= \gamma\,T \;+\; \tfrac{1}{2}\,\lambda\,\|w\|^{2}
+\omega(f)
+&= \gamma\,T\;+\;\tfrac{1}{2}\,\lambda\,\|w\|^{2}
 \end{aligned}
+
 $$
 
 Onde:
