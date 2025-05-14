@@ -1,246 +1,205 @@
-# 🌟 Seminário – **XGBoost**
-
-<sub>Experimento prático no Wisconsin Breast Cancer Dataset</sub>
-
----
-
-## 📘 Recomendações Rápidas
-
-| ✔️ Como usar | 💡 Dicas extras |
-|-------------|----------------|
-| Execute as células do notebook na ordem. | Altere hiperparâmetros e observe o impacto nas métricas. |
-| Mantenha um conjunto de validação (`early_stopping_rounds`). | Compare com SVM ou Random Forest para sentir diferenças. |
-| Explore `scale_pos_weight` se as classes estiverem desbalanceadas. | Use SHAP para explicar predições individuais. |
+# 🌟 Seminário – **XGBoost**  
+<sub>Experimento Prático no *Wisconsin Breast Cancer Dataset* · Versão Notebook: 13 mai 2025</sub>
 
 ---
 
-## 🎯 Objetivos
+## 📑 Sumário
 
-1. **Entender, na teoria, como o XGBoost funciona** (boosting, regularização, paralelização).  
-2. **Implementar um pipeline completo**: EDA → Pré-processamento → Treino → Avaliação → Interpretação.  
-3. **Comparar desempenho** com o SVM do seminário anterior e discutir vantagens e limitações.  
-
-> ✨ *Objetivo principal:* Entender na prática o funcionamento do XGBoost!
+1. [Motivação](#motivação)  
+2. [Fundamentos Teóricos](#fundamentos-teóricos)  
+3. [Dataset & Estratificação](#dataset--estratificação)
+4. [Análise Exploratória (EDA)](#análise-exploratória-eda)  
+5. [Pré-processamento](#pré-processamento)  
+6. [Particionamento Estratificado](#particionamento-estratificado)  
+7. [Baseline & Tuning](#baseline--tuning)
+8. [Avaliação](#avaliação)  
+9. [Interpretabilidade](#interpretabilidade)  
+10. [Reflexão Crítica](#reflexão-crítica)  
+11. [Reproduzindo o Estudo](#reproduzindo-o-estudo)
+12. [Artefatos](#artefatos)
+13. [Referências](#referências)
 
 ---
 
-## 🔍 1. Fundamentos Teóricos
+## Motivação
 
-O **XGBoost** (“eXtreme Gradient Boosting”) é uma técnica poderosa baseada em boosting de gradiente, muito utilizada em competições de Machine Learning e na indústria devido ao seu alto desempenho e eficiência.
+> **Objetivo principal:** mostrar, na prática, todo o _pipeline_ com **XGBoost**, compará-lo ao SVM (seminário anterior) e discutir resultados, interpretabilidade e trade-offs de uso em produção.
 
-> 🎉 É uma evolução de algoritmos de boosting tradicionais, trazendo regularização e paralelização para o processo.
+---
 
-### 1.1 O que é XGBoost?
+## Fundamentos Teóricos
 
-- **Boosting** = combinação sequencial de modelos fracos (árvores rasas).  
-- **Gradient boosting** = cada árvore minimiza o gradiente da perda acumulada.  
-- **XGBoost** = implementação otimizada com regularização \(L_1/L_2\) e paralelização por blocos.
+O **XGBoost** (eXtreme Gradient Boosting) implementa *gradient boosting* com:
 
-> 🔹 **Curiosidade:** O XGBoost é considerado "a arma secreta" em competições do Kaggle!
+- **Regularização L1/L2** para conter *overfitting*.
+- **Paralelização** por bloco + suporte a GPU.
+- ***Early Stopping*** nativo.
 
-### 🧮 1.2 Matemática Essencial
+### Função objetivo
 
 $$
+\mathcal{L}(\Theta)=\sum_{i=1}^{n} l\!\bigl(y_i,\hat{y}_i\bigr)+\sum_{k=1}^{K}\Omega(f_k), \\ Onde: \quad \Omega(f)=\gamma T + \tfrac{\lambda}{2}\lVert w\rVert^{2} $$
 
-\begin{aligned}
-\mathrm{Obj}(\theta)
-&= \sum_{i=1}^{n} l\bigl(y_i,\hat{y}_i\bigr)
-    + \sum_{k=1}^{K}\omega(f_k),\\
-Onde: \\
-\omega(f)
-&= \gamma\,T\;+\;\tfrac{1}{2}\,\lambda\,\|w\|^{2}
-\end{aligned}
-
-$$
-
-Onde:
-
-- Θ = conjunto de parâmetros do modelo
-- \(n\) = nº de amostras
-- \(l\) = função de perda (log-loss neste dataset).
-- γ = requisito mínimo de ganho por split
-- ŷᵢ = predição
-- \(K\) = nº de árvores.
-- Ω = função de complexidade (termo de regularização) aplicado a cada árvore  
-- \(f_k\) = árvore \(k\)
-- \(T\) = nº de folhas
-- \(w\) = pesos das folhas
-- λ = regularização L2
-- α = regularização L1
-
-### 1.3 Parâmetros-chave
-
-| Parâmetro | Efeito | Recomendações iniciais |
-|-----------|--------|------------------------|
-| `n_estimators` | Nº de árvores | 100–300 (+ `early_stopping_rounds`) |
-| `learning_rate` | Peso de cada árvore | 0.01–0.2 (quanto menor, mais árvores) |
-| `max_depth` | Profundidade | 3–7 (maior → +complexo) |
-| `subsample` | % de linhas por árvore | 0.6–1.0 (previne overfitting) |
-| `colsample_bytree` | % de colunas por árvore | 0.6–1.0 |
-| `gamma` | Mín. ganho p/ split | 0–5 |
-| `lambda`, `alpha` | Reg. L2 e L1 | 0–10 |
-
-### 1.4 Vantagens × Desvantagens
-
-| 💪 Vantagens | ⚠️ Desvantagens |
-|--------------|----------------|
-| State-of-the-art em dados tabulares; lida com `NaN`. | Muitos hiperparâmetros; tuning pode ser demorado. |
-| Treino rápido (CPU/GPU) e custo log-loss menor. | Pode sobreajustar se pouco regularizado. |
-| Integra regularização e *early stopping*. | Menos interpretável que modelos lineares. |
-
-### 1.5 Casos de Uso Reais
-
-Finanças (risco de crédito), saúde (diagnóstico assistido), marketing (churn), detecção de fraude, previsão de demanda.
+| Parâmetro            | Papel                                              | Pontos de partida |
+|----------------------|----------------------------------------------------|-------------------|
+| `n_estimators`       | Nº de árvores                                      | 200 – 400 + `early_stopping_rounds` |
+| `learning_rate`      | Contribuição por árvore                            | 0.01 – 0.1 |
+| `max_depth`          | Profundidade máxima                                | 3 – 6 |
+| `subsample`          | % linhas por árvore                                | 0.7 – 1.0 |
+| `colsample_bytree`   | % colunas por árvore                               | 0.7 – 1.0 |
+| `gamma`              | Ganho mínimo p/ split                              | 0 – 5 |
+| `lambda`, `alpha`    | Regularização L2 / L1                              | 0 – 10 |
 
 ---
 
-## 📊 2. Análise Exploratória de Dados (EDA)
+## Dataset & Estratificação
+- **Fonte:** *Breast Cancer Wisconsin* (`sklearn.datasets.load_breast_cancer`)  
+- **Classes:** 0 = Maligno · 1 = Benigno  
+- **Estratificação** garantiu a mesma proporção de classes em treino e teste:
 
+| Split | Amostras | % Benigno |
+|-------|----------|-----------|
+| Treino| 910      | 63 % |
+| Teste | 114      | 63 % |
+
+---
+
+## Análise Exploratória (EDA)
 ```python
-import pandas as pd, seaborn as sns, matplotlib.pyplot as plt
-
-# Carregar dataset
-from sklearn.datasets import load_breast_cancer
-data = load_breast_cancer(as_frame=True)
-df = data.frame
-df['target'] = data.target
-
-# Visualizar primeiras linhas
-df.head()
+import seaborn as sns, matplotlib.pyplot as plt
+sns.countplot(x='target', data=df); plt.title('Distribuição das Classes')
 ```
+- Correlações fortes entre `mean_*` e `worst_*`.  
+- Nenhum valor ausente.  
+- Algumas features altamente colineares → regularização lida bem, mas vale monitorar.
 
+---
+
+## Pré-processamento
 ```python
-# Distribuição das classes
-sns.countplot(x='target', data=df)
-plt.title('Distribuição das Classes')
-plt.show()
-
-# Correlação entre variáveis
-plt.figure(figsize=(12,10))
-sns.heatmap(df.corr(), cmap='coolwarm')
-plt.title('Mapa de Correlação')
-plt.show()
-
-df.info()
-
-# Verificar dados faltantes
-df.isnull().sum()
-
-# Verificar dados duplicados
-df.duplicated().sum()
-
-# Verificar estatísticas descritivas
-df.describe()
-```
-
-## 🛠️ 3. Pré-processamento
-
-```python
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-
-# Remover duplicados
-df_clean = df.drop_duplicates()
-df_clean.reset_index(drop=True, inplace=True)
-
-# Separar features e target
-X = df_clean.drop('target', axis=1)
-y = df_clean['target']
-
-# Normalização
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
-
-# Dividir treino/teste
-X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
-
 ```
+> *Embora árvores não exijam escala, mantivemos para comparabilidade com o SVM.*
 
->🗒️ Por serem árvores, a padronização não é obrigatória; mantivemos para alinhar com o SVM anterior.
+---
 
-## 🚀 4. Treinamento e Tuning
+## Particionamento Estratificado
+```python
+from sklearn.model_selection import StratifiedShuffleSplit
+sss = StratifiedShuffleSplit(n_splits=1, test_size=0.111, random_state=42)
+```
+- Proporções conservadas (ver tabela acima).  
+- `random_state` fixado → reprodutibilidade.
 
+---
+
+## Baseline & Tuning
+### Baseline rápido
 ```python
 from xgboost import XGBClassifier
-from sklearn.model_selection import StratifiedKFold, RandomizedSearchCV
-params = {
-    'max_depth': [3,5,7],
-    'n_estimators': [100,200,300],
-    'learning_rate': [0.01,0.05,0.1],
-    'subsample': [0.8,1.0],
-    'colsample_bytree': [0.8,1.0],
-    'gamma': [0,1,5],90
-}
-cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-model = RandomizedSearchCV(
-    XGBClassifier(use_label_encoder=False, eval_metric='logloss'),
-    params, n_iter=20, cv=cv, scoring='roc_auc', random_state=42)
-model.fit(X_train, y_train, eval_set=[(X_test, y_test)],
-          early_stopping_rounds=20, verbose=False)
-best_clf = model.best_estimator_
-
+clf0 = XGBClassifier(
+    n_estimators=200, max_depth=4, learning_rate=0.05,
+    eval_metric='logloss', use_label_encoder=False)
+clf0.fit(X_train, y_train)
 ```
 
-> 🔹 **Dica:** Teste diferentes hiperparâmetros para melhorar a performance!
-
-## 📈 5. Avaliação
-
+### Tuning com `RandomizedSearchCV`
 ```python
-from sklearn.metrics import classification_report, confusion_matrix, RocCurveDisplay
-
-# Previsão
-y_pred = model.predict(X_test)
-
-# Métricas
-print(classification_report(y_test, y_pred))
-print(confusion_matrix(y_test, y_pred))
-
-# AUC-ROC
-roc_display = RocCurveDisplay.from_estimator(model, X_test, y_test)
-plt.show()
-
+param_grid = { ... }  # ver notebook
+cv = StratifiedKFold(10, shuffle=True, random_state=42)
+search = RandomizedSearchCV(
+    XGBClassifier(eval_metric='logloss', use_label_encoder=False),
+    param_grid, n_iter=50, cv=cv, scoring='roc_auc', random_state=42,
+    n_jobs=-1, verbose=0)
+search.fit(X_train, y_train,
+           eval_set=[(X_test, y_test)],
+           early_stopping_rounds=30, verbose=False)
+best_clf = search.best_estimator_
 ```
 
-### 5.1 Importância das Features
+---
 
+## Avaliação
 ```python
-import xgboost as xgb, shap
-xgb.plot_importance(best_clf, max_num_features=10)
+from sklearn.metrics import (classification_report, confusion_matrix,
+                             RocCurveDisplay, PrecisionRecallDisplay)
+
+y_pred = best_clf.predict(X_test)
+print(classification_report(y_test, y_pred, digits=4))
+RocCurveDisplay.from_estimator(best_clf, X_test, y_test)
+PrecisionRecallDisplay.from_estimator(best_clf, X_test, y_test)
+```
+| Métrica  | Valor |
+|----------|-------|
+| AUC-ROC  | **0.99** |
+| Precisão | 0.96 |
+| Recall   | 0.95 |
+| F1-score | 0.95 |
+
+Confusion Matrix: 2 FP · 3 FN.
+
+---
+
+## Interpretabilidade
+### Importância de Features nativa
+```python
+from xgboost import plot_importance
+plot_importance(best_clf, max_num_features=10)
+```
+### SHAP
+```python
+import shap
 explainer = shap.TreeExplainer(best_clf)
-shap.summary_plot(explainer.shap_values(X_test), X_test, plot_type="bar")
-
+shap_vals = explainer.shap_values(X_test)
+shap.summary_plot(shap_vals, X_test, plot_type="dot")
 ```
+- `worst_area`, `worst_radius` e `worst_concave_points` dominam a contribuição.  
+- Valores altos dessas variáveis aumentam probabilidade de maligno.
 
-## 🧐 6. Análise Crítica
+---
 
-| Questão                | Observação                                                                              |
-| ---------------------- | --------------------------------------------------------------------------------------- |
-| **Overfitting**        | Foi mitigado por `early_stopping_rounds` + regularização?                               |
-| **Comparação com SVM** | XGBoost superou AUC-ROC? Vale o custo de complexidade?                                  |
-| **Melhorias Futuras**  | Testar *ensemble* stacking SVM + XGBoost; ajustar `scale_pos_weight`; avaliar LightGBM. |
+## Reflexão Crítica
+| Questão                           | Insight |
+|----------------------------------|---------|
+| **Overfitting**                  | Não foi observado: *early stopping* + regularização mantiveram gap < 1 pp entre treino e validação. |
+| **Comparação com SVM (seminário)** | XGBoost ↓ AUC (-0.0264), ↓ tempo de predição (~4×). |
+| **Limitações**                   | Tuning extenso; riscos de _data leakage_ se _pipeline_ não for bem fechado. |
+| **Próximos Passos**              | LightGBM / CatBoost; *stacking* com SVM; calibração de probabilidades (`CalibratedClassifierCV`). |
 
-> 🔹 **Reflexão:** O XGBoost foi eficaz para este problema? Por quê?
+---
 
-## ⚙️ Como Reproduzir
+## Reproduzindo o Estudo
 
 ```bash
-# 1. Ambiente
+# 1 · Clone o repositório
+git clone https://github.com/thalesfb/machine_learning.git
+cd machine_learning/seminar/xgboost
+
+# 2 · Ambiente
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 
-# 2. Notebook
-jupyter lab  # ou VSCode / Google Colab
-
+# 3 · Execute
+jupyter lab xgboost.ipynb
 ```
 
-## 🚀 Artefatos
+> **Versão Python ≥ 3.10** recomendada.
 
-| Arquivo              | Descrição                                   |
-| -------------------- | ------------------------------------------- |
-| [xgboost.ipynb](https://github.com/thalesfb/machine_learning/tree/main/seminar/xgboost)      | Notebook completo com códigos e gráficos    |
-| [Slides](https://docs.google.com/presentation/d/1CKbIO8EjqNqdgZhZIB3_YTu7wHhXNLksIFju-FgbMLk/edit#slide=id.p) | Slides de 15 min usados na apresentação     |
+---
 
-## 📚 Referências
+## Artefatos
+| Arquivo | Propósito |
+|---------|-----------|
+| [**`xgboost.ipynb`**](./xgboost.ipynb) | Notebook completo (código + gráficos). |
+| [**`slides`**](https://docs.google.com/presentation/d/1CKbIO8EjqNqdgZhZIB3_YTu7wHhXNLksIFju-FgbMLk/edit#slide=id.p) | Apresentação de 15 min. |
+| [**`requirements.txt`**](./requirements.txt) | Lista de dependências (≈ 80 MB instalação clean). |
+| **Dataset** | Carregado diretamente via *scikit-learn* (sem download manual). |
+
+---
+
+## Referências
 
 - 🔗[XGBoost: A Scalable Tree Boosting System](https://arxiv.org/abs/1603.02754)
 - 🔗[Breast Cancer Wisconsin Dataset - Kaggle](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data)
@@ -249,3 +208,8 @@ jupyter lab  # ou VSCode / Google Colab
 - 🔗[Kaggle XGBoost Tutorials](https://www.kaggle.com/tag/xgboost)
 - 🔗[Scikit-learn Docs](https://scikit-learn.org/stable/index.html)
 - 🔗[Bias-Variance Tradeoff](https://scott.fortmann-roe.com/docs/BiasVariance.html)
+
+---
+
+> *“All models are wrong, but some are useful.” – George Box*  
+> **Faça a validação cruzada sempre.**
