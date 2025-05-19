@@ -1,0 +1,9 @@
+ipykernel
+kagglehub
+keras-tuner
+matplotlib
+numpy
+pandas
+plotly
+scikit-learn
+tensorflow
