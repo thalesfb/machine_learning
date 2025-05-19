@@ -7,17 +7,18 @@
 
 ## 🗺️ Índice
 
-1. [🔮 Introdução](#🔮-introdução)
-2. [🗂️ Descrição da Base de Dados](#🗂️-descrição-da-base-de-dados)
-3. [🧹 Pré-processamento](#🧹-pré-processamento)
-4. [🎛️ Arquiteturas & Hiperparâmetros](#🎛️-arquiteturas--hiperparâmetros)
-5. [🧪 Planejamento Experimental](#🧪-planejamento-experimental)
-6. [🔬 Experimentos](#🔬-experimentos)
-7. [📊 Resultados & Métricas](#📊-resultados--métricas)
-8. [💬 Discussão](#💬-discussão)
-9. [🔚 Conclusões](#🔚-conclusões)
-10. [🚀 Reprodutibilidade](#🚀-reprodutibilidade)
-11. [📚 Referências](#📚-referências)
+1. [🔮 Introdução](#-introdução)
+2. [🗂️ Descrição da Base de Dados](#%EF%B8%8F-descrição-da-base-de-dados)
+3. [🧹 Pré-processamento](#-pré-processamento)
+4. [🎛️ Arquiteturas & Hiperparâmetros](#%EF%B8%8F-arquiteturas--hiperparâmetros)
+5. [🧪 Planejamento Experimental](#-planejamento-experimental)
+6. [🔬 Experimentos](#-experimentos)
+7. [🏆 Modelo Melhorado](#-modelo-melhorado)
+8. [📊 Resultados & Métricas](#-resultados--métricas)
+8. [💬 Discussão](#-discussão)
+9. [🔚 Conclusões](#-conclusões)
+10. [🚀 Reprodutibilidade](#-reprodutibilidade)
+11. [📚 Referências](#-referências)
 
 ---
 
