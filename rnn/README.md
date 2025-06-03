@@ -25,7 +25,7 @@
 ## 🔮 Introdução
 
 Previsões confiáveis de **séries temporais climáticas** são essenciais para agricultura, energia e planejamento urbano.
-Neste estudo aplicamos **Redes Neurais Recorrentes do tipo *************************************Long Short-Term Memory************************************* (LSTM)** — na configuração *many-to-one* — para prever a **temperatura mínima do dia seguinte** em Melbourne (🇦🇺).
+Neste estudo aplicamos **Redes Neurais Recorrentes do tipo **Long Short-Term Memory** (LSTM)** — na configuração *many-to-one* — para prever a **temperatura mínima do dia seguinte** em Melbourne (🇦🇺).
 
 > **Objetivos**
 >
