@@ -4,7 +4,52 @@ Um repositório dedicado ao aprendizado e experimentação com algoritmos de Mac
 
 ## 📋 Conteúdo do Repositório
 
-Este repositório contém notebooks e scripts relacionados a diferentes técnicas e aplicações de machine learning:
+Este repositório contém notebooks e scripts relacionados a diferentes técnicas e aplicações de machine learning
+
+### Estrutura do Repositório
+
+```plaintext
+├── ann
+│   ├── cancer.ipynb
+│   ├── diabetes.ipynb
+│   ├── heart_disease.ipynb
+│   ├── heart.csv
+│   ├── AM_Doença_no_Coração_Naive_Bayes.ipynb
+│   └── AM_Naive_Bayes_Experimento_Prático.ipynb
+├── cnn
+│   ├── stl-10_classification.ipynb
+│   ├── best_model.h5
+│   ├── efficientnet_fine_tuned.h5
+│   ├── efficientnet_initial.h5
+│   └── Lecun98.pdf
+├── rnn
+│   ├── models/
+│   │   ├── lstm_improved_model.h5
+│   │   ├── lstm_model.h5
+│   ├── lstm_temperatures.ipynb
+│   ├── README.md
+│   ├── requirements.txt
+├── seminar
+│   ├── svm
+│   │   ├── svm.ipynb
+│   │   └── README.md
+│   │   └── requirements.txt
+│   ├── xgboost
+│   │   ├── xgboost.ipynb
+│   │   └── requirements.txt
+│   │   ├── XGBoost_exemplo.ipynb
+│   │   └── README.md
+├── test
+│   ├── extract.py
+│   ├── data/
+│   ├── processamento.log
+│   ├── saida.xlsx
+├── introduction.ipynb
+├── AM_Atividade_Avaliativa_1.ipynb
+├── requirements.txt
+├── LICENSE
+└── README.md
+```
 
 ### 🖼️ Redes Neurais Convolucionais (CNN)
 
@@ -20,10 +65,19 @@ Este repositório contém notebooks e scripts relacionados a diferentes técnica
 - [`AM_Doença_no_Coração_Naive_Bayes.ipynb`](./ann/AM_Doença_no_Coração_Naive_Bayes.ipynb): Classificação de doenças cardíacas utilizando Naive Bayes (dataset: [`ann/heart.csv`](./ann/heart.csv)).
 - [`AM_Naive_Bayes_Experimento_Prático.ipynb`](./ann/AM_Naive_Bayes_Experimento_Prático.ipynb): Experimentos práticos com o algoritmo Naive Bayes.
 
+### 🔄 Redes Neurais Recorrentes (RNN)
+
+- [`lstm_temperatures.ipynb`](./rnn/lstm_temperatures.ipynb): Predição de temperaturas mínimas em Melbourne usando LSTM. Mais detalhes em [`rnn/README.md`](./rnn/README.md).
+
 ### 📚 Material Educacional e Atividades
 
 - [`introduction.ipynb`](./introduction.ipynb): Notebook com exercícios de revisão de conceitos de machine learning.
 - [`AM_Atividade_Avaliativa_1.ipynb`](./AM_Atividade_Avaliativa_1.ipynb): Atividade avaliativa sobre Machine Learning.
+
+### ⚙️ Physics-Informed Neural Networks (PINNs)
+
+- [`pinn_motor_thermal.ipynb`](./pinn/pinn_motor_thermal.ipynb): Implementação de Physics-Informed Neural Networks (PINNs) para resolver equações diferenciais parciais.
+- [`README.md`](./pinn/README.md): Detalhes sobre a implementação e uso de PINNs.
 
 ### 🎓 Seminários
 
@@ -37,15 +91,6 @@ Este repositório contém notebooks e scripts relacionados a diferentes técnica
   - [`xgboost.ipynb`](./seminar/xgboost/xgboost.ipynb): Notebook principal com a implementação e estudo de XGBoost.
   - [`XGBoost_exemplo.ipynb`](./seminar/xgboost/XGBoost_exemplo.ipynb): Exemplo prático de uso do XGBoost.
   - [`README.md`](./seminar/xgboost/README.md): Detalhes específicos do seminário de XGBoost.
-
-### 🧪 Dados de Teste
-
-- O diretório `test/` contém scripts e dados para testes, incluindo:
-  - Scripts de extração de dados (`extract.py`)
-  - Logs de processamento
-  - Arquivos de saída em Excel
-  - Scripts de visualização de dados (`visualization.py`)
-  - Dados brutos em `test/data/`
 
 ## 🛠️ Bibliotecas Utilizadas
 
@@ -97,6 +142,14 @@ Implementação de redes neurais convolucionais para classificação de imagens 
 ### Classificação de Câncer
 
 Aplicação de redes neurais para classificação de dados de câncer, com foco em experimentos para otimização de hiperparâmetros, avaliação de diferentes arquiteturas e análise de desempenho em conjuntos de dados variados.
+
+### Predição de Temperaturas com LSTM
+
+Uso de redes recorrentes do tipo LSTM para prever a temperatura mínima do dia seguinte em Melbourne. O projeto explora otimização de janelas temporais e hiperparâmetros.
+
+### Estimativa de Temperatura em Motores com PINNs
+
+Uso de Physics-Informed Neural Networks para prever a temperatura interna de motores elétricos a partir de medições de corrente e temperatura superficial. Projeto final do curso de Redes Neurais Artificiais e Deep Learning.
 
 ## 📝 Licença
 
