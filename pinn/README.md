@@ -1,27 +1,27 @@
 # ⚙️🔥 Estimativa de Temperatura Interna em Motores Elétricos via Physics‑Informed Neural Networks (PINNs)
 
 > **Trabalho Final – Redes Neurais Artificiais e Deep Learning**  
-> **Autor:** Thales Ferreira • **Validação prévia:** 02 / 06 • **Entrega final:** 16 / 06
+> **Autor:** Thales Ferreira • **Validação prévia:** 09 / 06 • **Entrega final:** 16 / 06
 
 ---
 
 ## 📑 Índice
-1. [🔮 Introdução](#-introdução)  
-2. [📚 Fundamentação Teórica](#-fundamentação-teórica)  
-3. [💾 Base de Dados & Domínio do Problema](#-base-de-dados--domínio-do-problema)  
-4. [🛠️ Pré‑processamento & Geração de Dados Sintéticos](#-pré-processamento--geração-de-dados-sintéticos)  
-5. [🏗️ Arquitetura PINN](#-arquitetura-pinn)  
-6. [🧪 Planejamento Experimental](#-planejamento-experimental)  
-7. [🔬 Experimentos & Resultados](#-experimentos--resultados)  
-8. [📊 Análise e Discussão](#-análise-e-discussão)  
-9. [🔚 Considerações Finais](#-considerações-finais)  
-10. [🚀 Reprodutibilidade](#-reprodutibilidade)  
+1. [🔮 Introdução](#-introdução)
+2. [📚 Fundamentação Teórica](#-fundamentação-teórica)
+3. [💾 Base de Dados & Domínio do Problema](#-base-de-dados--domínio-do-problema)
+4. [🛠️ Pré‑processamento & Geração de Dados Sintéticos](#-préprocessamento--geração-de-dados-sintéticos)
+5. [🏗️ Arquitetura PINN](#-arquitetura-pinn)
+6. [🧪 Planejamento Experimental](#-planejamento-experimental)
+7. [🔬 Experimentos & Resultados](#-experimentos--resultados)
+8. [📊 Análise e Discussão](#-análise-e-discussão)
+9. [🔚 Considerações Finais](#-considerações-finais)
+10. [🚀 Reprodutibilidade](#-reprodutibilidade)
 11. [📚 Referências](#-referências)
 
 ---
 
 ## 🔮 Introdução
-Sobreaquecimento do enrolamento é uma das principais causas de falhas prematuras em motores elétricos industriais. **Sensores intrusivos** elevam custo e complexidade; logo, surge a necessidade de um **sensor virtual** que estime a temperatura interna a partir de variáveis fáceis de medir (corrente RMS, temperatura da carcaça). Neste trabalho propomos um modelo baseado em **Physics‑Informed Neural Networks (PINNs)** — redes que minimizam simultaneamente o erro nos dados disponíveis e o **resíduo da equação de calor 1‑D com fonte \(I^2R\)**.
+Sobreaquecimento do enrolamento é uma das principais causas de falhas prematuras em motores elétricos industriais. **Sensores intrusivos** elevam custo e complexidade; logo, surge a necessidade de um **sensor virtual** que estime a temperatura interna a partir de variáveis fáceis de medir (corrente RMS, temperatura da carcaça). Neste trabalho proponho um modelo baseado em **Physics‑Informed Neural Networks (PINNs)** — redes que minimizam simultaneamente o erro nos dados disponíveis e o **resíduo da equação de calor 1‑D com fonte \(I^2R\)**.
 
 ### Hipótese
 > Um PINN devidamente calibrado atingirá **MAE ≤ 5 °C** na estimativa da temperatura interna em regime de produção contínua.
@@ -118,30 +118,6 @@ jupyter pinn_motor_thermal.ipynb
 
 ## 📚 Referências
 > **Formato ABNT (NBR 6023:2018)**  
-
-CUOMO, S. <i>et al.</i> Scientific machine learning through physics‑informed neural networks: where we are and what’s next. <i>Journal of Scientific Computing</i>, [s. l.], v. 92, art. 88, 2022. DOI: 10.1007/s10915-022-01939-z. Disponível em: &lt;https://doi.org/10.1007/s10915-022-01939-z&gt;. Acesso em: 28 mai. 2025.  
-
-ERIKSSON, L. <i>Online temperature prediction in electric machines using PINNs</i>. 2024. Dissertação (Mestrado) – KTH Royal Institute of Technology, Stockholm, 2024. Disponível em: &lt;https://kth.diva-portal.org/smash/get/diva2:1749477/FULLTEXT02.pdf&gt;. Acesso em: 28 mai. 2025.  
-
-GARCÍA, D.; HILALI, W.; NELLES, O. Input‑to‑state stable virtual sensor for permanent‑magnet motors via PINNs. <i>IFAC‑PapersOnLine</i>, [s. l.], v. 56, n. 1, p. 240‑245, 2023. DOI: 10.1016/j.ifacol.2023.10.040. Disponível em: &lt;https://doi.org/10.1016/j.ifacol.2023.10.040&gt;. Acesso em: 28 mai. 2025.  
-
-HAGHIGHAT, E.; JUANES, R. SciANN: a Keras/TensorFlow wrapper for scientific computations and physics‑informed deep learning using artificial neural networks. <i>Computer Methods in Applied Mechanics and Engineering</i>, Amsterdam, v. 373, art. 113552, 2021. DOI: 10.1016/j.cma.2020.113552. Disponível em: &lt;https://doi.org/10.1016/j.cma.2020.113552&gt;. Acesso em: 28 mai. 2025.  
-
-LU, L.; MENG, X.; MAO, Z.; KARNIADAKIS, G. E. DeepXDE: a deep learning library for solving differential equations. <i>SIAM Review</i>, Philadelphia, v. 63, n. 1, p. 208‑228, 2021. DOI: 10.1137/19M1274067. Disponível em: &lt;https://doi.org/10.1137/19M1274067&gt;. Acesso em: 28 mai. 2025.  
-
-NGUYEN, T.; LEE, J.; PARK, K. End‑to‑end differentiable physics temperature estimation for permanent‑magnet synchronous motor drives. <i>Sensors</i>, Basel, v. 23, n. 4, p. 174, 2023. DOI: 10.3390/s23040174. Disponível em: &lt;https://doi.org/10.3390/s23040174&gt;. Acesso em: 28 mai. 2025.  
-
-ÖBERG, J. L. <i>Physics‑informed neural network for thermal modeling of an electric motor drive</i>. 2023. Dissertação (Mestrado) – Chalmers University of Technology, Gothenburg, 2023. Disponível em: &lt;https://odr.chalmers.se/items/03b63aad-812d-4ec3-9679-1aa65981eff6&gt;. Acesso em: 28 mai. 2025.  
-
-RAISSI, M.; PERDIKARIS, P.; KARNIADAKIS, G. E. Physics‑informed deep learning (Part I): data‑driven solutions of nonlinear partial differential equations. <i>arXiv</i>, 2017. Disponível em: &lt;https://arxiv.org/abs/1711.10561&gt;. Acesso em: 28 mai. 2025.  
-
-RAISSI, M.; PERDIKARIS, P.; KARNIADAKIS, G. E. Physics‑informed neural networks: a deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations. <i>Journal of Computational Physics</i>, Amsterdam, v. 378, p. 686‑707, 2019. DOI: 10.1016/j.jcp.2018.10.045. Disponível em: &lt;https://doi.org/10.1016/j.jcp.2018.10.045&gt;. Acesso em: 28 mai. 2025.  
-
-SCIANN. SciANN documentation. 2024. Disponível em: &lt;https://www.sciann.com/&gt;. Acesso em: 28 mai. 2025.  
-
-TORRES, E.; SCHIEFER, J.; NIEPERT, M. Adaptive physics‑informed neural networks: a survey. <i>arXiv</i>, 2025. Disponível em: &lt;https://arxiv.org/abs/2503.18181&gt;. Acesso em: 28 mai. 2025.  
-
-ZHANG, Y. <i>et al.</i> Physics‑informed neuro‑evolution (PINE): a survey and prospects. <i>arXiv</i>, 2025. Disponível em: &lt;https://arxiv.org/abs/2501.06572&gt;. Acesso em: 28 mai. 2025.  
 
 [1] M. Raissi, P. Perdikaris, and G. E. Karniadakis, “Physics‑informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations,” *Journal of Computational Physics*, vol. 378, pp. 686–707, 2019, doi: https://doi.org/10.1016/j.jcp.2018.10.045.  
 
