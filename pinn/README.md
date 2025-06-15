@@ -108,7 +108,6 @@ git clone https://github.com/thalesfb/machine_learning/
 cd pinn
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
 jupyter pinn_motor_thermal.ipynb
 ```
 
