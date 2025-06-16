@@ -14,6 +14,7 @@ seaborn>=0.12.0
 
 # Data Manipulation
 pandas>=2.0.0
+kagglehub>=0.2.0  # Para download do dataset Electric Motor Temperature
 
 # Jupyter Environment
 jupyter>=1.0.0
