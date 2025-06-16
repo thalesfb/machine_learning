@@ -111,6 +111,13 @@ Os parâmetros físicos de base — \(L = 20\,\text{mm}\), \(R = 2.3\,\Omega\) e
 Cada experimento é iniciado pela função `run_experiment()` do notebook
 `pinn_motor_thermal.ipynb`.
 
+As métricas e visualizações são unificadas por
+`calculate_metrics`, `plot_training_history` e
+`plot_predictions_vs_actual`.  Após cada execução é possível gravar o
+modelo e os resultados com `save_experiment_results`, garantindo
+reprodutibilidade das análises.
+
+
 ### 7.2 Modo Rápido
 Para validar rapidamente o pipeline, os três experimentos (E1, E2 e E3) podem
 ser executados com número reduzido de épocas. Esse modo permite verificar se o
