@@ -46,9 +46,25 @@ Bibliotecas como **DeepXDE** [10] e **SciANN** [12] fornecem APIs de alto nível
 | Fonte | Tipo | Atributos (1 Hz) |
 |-------|------|------------------|
 | **Sintético** | Solução numérica da equação de calor 1‑D | _t, I(t), T_surface(t), T_internal(t)_ |
-| **Real (“shadow”)** | Historiador SCADA – Motor #3 | _timestamp, I, V, T_surface, T_air_ |
+| **Real ("Electric Motor Temperature")** | Kaggle: wkirgsn/electric-motor-temperature | _u_d, u_q, i_d, i_q, motor_speed, torque, pm, stator_yoke, stator_winding, ambient, coolant_ |
 
 Condições de contorno: \(u(0,t)=T_{surface}(t)\); \(∂u/∂x|_{x=L}=0\).
+
+### Integração com o Dataset Electric Motor Temperature
+As medições reais para os experimentos **E2** e **E3** são obtidas do dataset [Electric Motor Temperature](https://www.kaggle.com/datasets/wkirgsn/electric-motor-temperature). O arquivo principal `pmsm_temperature_data.csv` contém correntes, tensões e diversas temperaturas registradas em um motor PMSM. O carregamento pode ser feito com `kagglehub`:
+
+```python
+import kagglehub
+from kagglehub import KaggleDatasetAdapter
+
+real_df = kagglehub.load_dataset(
+    KaggleDatasetAdapter.PANDAS,
+    "wkirgsn/electric-motor-temperature",
+    "pmsm_temperature_data.csv",
+)
+```
+
+Após o download, o dataset é dividido em subconjuntos de **validação** e **teste** conforme o planejamento experimental.
 
 ---
 
@@ -57,7 +73,7 @@ Condições de contorno: \(u(0,t)=T_{surface}(t)\); \(∂u/∂x|_{x=L}=0\).
 2. **Perfis de corrente:** degraus, rampas, e ciclos extraídos de registros reais.  
 3. **Ruído aditivo:** \(N(0,0.5 °C)\) em temperaturas; ±2 % em corrente.  
 4. **Normalização:** Min‑Max \([0,1]\).  
-5. **Divisão temporal:** 80 % treino, 10 % validação, 10 % teste.
+5. **Divisão temporal:** 70 % treino, 20 % validação, 10 % teste.
 
 ---
 
@@ -85,6 +101,13 @@ Métricas: **MAE**, **RMSE**, **ρ de Pearson**.
 
 ## 🔬 Experimentos & Resultados
 *(preencher após execução no notebook)*
+Os experimentos seguem o planejamento da tabela anterior e utilizam o dataset **Electric Motor Temperature** para os passos de validação e teste:
+
+- **E1 – Sintético:** verifica se o PINN aprende corretamente a PDE gerada artificialmente.
+- **E2 – Validação:** fine‑tuning do modelo com uma fração do dataset real.
+- **E3 – Teste:** avaliação final na partção de teste do mesmo conjunto.
+
+As métricas observadas são **MAE**, **RMSE** e **coeficiente de Pearson** entre temperatura prevista e medida.
 
 ---
 
