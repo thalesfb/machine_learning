@@ -51,7 +51,7 @@ Bibliotecas como **DeepXDE** [10] e **SciANN** [12] fornecem APIs de alto nível
 Condições de contorno: \(u(0,t)=T_{surface}(t)\); \(∂u/∂x|_{x=L}=0\).
 
 ### Integração com o Dataset Electric Motor Temperature
-As medições reais para os experimentos **E2** e **E3** são obtidas do dataset [Electric Motor Temperature](https://www.kaggle.com/datasets/wkirgsn/electric-motor-temperature). O arquivo principal `pmsm_temperature_data.csv` contém correntes, tensões e diversas temperaturas registradas em um motor PMSM. O carregamento pode ser feito com `kagglehub`:
+As medições reais para os experimentos **E2** são obtidas do dataset [Electric Motor Temperature](https://www.kaggle.com/datasets/wkirgsn/electric-motor-temperature). O arquivo principal `pmsm_temperature_data.csv` contém correntes, tensões e diversas temperaturas registradas em um motor PMSM. O carregamento pode ser feito com `kagglehub`:
 
 ```python
 import kagglehub
@@ -105,7 +105,7 @@ Os experimentos seguem o planejamento da tabela anterior e utilizam o dataset **
 
 - **E1 – Sintético:** verifica se o PINN aprende corretamente a PDE gerada artificialmente.
 - **E2 – Validação:** fine‑tuning do modelo com uma fração do dataset real.
-- **E3 – Teste:** avaliação final na partção de teste do mesmo conjunto.
+- **E3 – Teste:** avaliação final em um turno inédito.
 
 As métricas observadas são **MAE**, **RMSE** e **coeficiente de Pearson** entre temperatura prevista e medida.
 
