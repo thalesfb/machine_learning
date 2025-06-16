@@ -100,14 +100,29 @@ Métricas: **MAE**, **RMSE**, **ρ de Pearson**.
 ---
 
 ## 🔬 Experimentos & Resultados
-*(preencher após execução no notebook)*
-Os experimentos seguem o planejamento da tabela anterior e utilizam o dataset **Electric Motor Temperature** para os passos de validação e teste:
+Os experimentos seguem o planejamento descrito na tabela anterior e respeitam as
+escolhas documentadas em [docs/adr.md](./docs/adr.md). O dataset **Electric
+Motor Temperature** é utilizado nas etapas de validação e teste, sempre com a
+divisão temporal **70 % treino / 20 % validação / 10 % teste**.
 
-- **E1 – Sintético:** verifica se o PINN aprende corretamente a PDE gerada artificialmente.
-- **E2 – Validação:** fine‑tuning do modelo com uma fração do dataset real.
-- **E3 – Teste:** avaliação final em um turno inédito.
+### 7.1 Configuração das Execuções
+Os parâmetros físicos de base — \(L = 20\,\text{mm}\), \(R = 2.3\,\Omega\) e
+\(\alpha = 1.1\times10^{-4}\,\text{m²/s}\) — foram fixados conforme as ADRs.
+Cada experimento é iniciado pela função `run_experiment()` do notebook
+`pinn_motor_thermal.ipynb`.
 
-As métricas observadas são **MAE**, **RMSE** e **coeficiente de Pearson** entre temperatura prevista e medida.
+### 7.2 Modo Rápido
+Para validar rapidamente o pipeline, os três experimentos (E1, E2 e E3) podem
+ser executados com número reduzido de épocas. Esse modo permite verificar se o
+treinamento ocorre sem erros antes da execução completa.
+
+### 7.3 Tabela Comparativa de Resultados
+Após a execução, os valores de **MAE**, **RMSE** e **coeficiente de Pearson** são
+organizados em uma tabela que resume o desempenho dos experimentos.
+
+### 7.4 Execução Completa (Opcional)
+Para resultados mais robustos, recomenda-se rodar o notebook com todas as épocas
+planejadas (1000) e registrar a tabela de métricas final.
 
 ---
 
