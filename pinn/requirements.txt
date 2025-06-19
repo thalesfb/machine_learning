@@ -1,30 +1,43 @@
 # Requirements para PINN - Estimativa Térmica em Motores Elétricos
-# Versões compatíveis com Python 3.12 (atualizado Jun 2025)
+# Versões compatíveis com Python 3.11 (atualizado Jun 2025)
 
-# Core Dependencies
-tensorflow>=2.16.0,<3.0.0  # Primeira versão compatível com Python 3.12
-numpy>=1.24.0  # Versão compatível com Python 3.12
-scipy>=1.11.1  # Versão compatível com Python 3.12
-scikit-learn>=1.3.0  # Versão mais recente compatível
-sciann>=0.7.0.1  # Versão mais recente disponível (1.0.0 não existe)
+# Core Dependencies - VERSÕES ESTÁVEIS PARA PYTHON 3.11
+tensorflow==2.15.0  # Versão mais estável para compatibilidade com PINN libraries
+numpy==1.24.3  # Versão estável para Python 3.11
+scipy==1.11.1  # Versão estável para Python 3.11
+scikit-learn==1.3.0  # Versão estável para Python 3.11
+
+# PINN Backends - VERSÕES COMPATÍVEIS COM TENSORFLOW 2.15
+# ⚠️ IMPORTANTE: DeepXDE e SciANN têm problemas com TensorFlow 2.16+
+# O sistema usará fallback para implementação manual se necessário
+sciann==0.7.0.1  # Versão estável disponível
+deepxde==1.14.0  # Versão estável disponível
 
 # Visualization
-matplotlib>=3.7.0
-seaborn>=0.12.0
+matplotlib==3.7.2
+seaborn==0.12.2
 
 # Data Manipulation
-pandas>=2.0.0
-kagglehub>=0.2.0  # Para download do dataset Electric Motor Temperature
+pandas==2.0.3
+kagglehub==0.2.0  # Para download do dataset Electric Motor Temperature
 
 # Jupyter Environment
-jupyter>=1.0.0
-ipykernel>=6.25.0
+jupyter==1.0.0
+ipykernel==6.25.0
 
 # Progress Bars
-tqdm>=4.66.0
+tqdm==4.66.0
 
 # Image Processing (for plots)
-pillow>=10.0.0
+pillow==10.0.0
 
 # Configuration Files (optional)
-pyyaml>=6.0.0 
+pyyaml==6.0.0
+
+# Build Tools
+setuptools>=68.0.0  # Versão mínima para Python 3.11
+wheel>=0.40.0  # Para evitar problemas de build
+
+# Dependências alternativas para fallback
+# Caso as bibliotecas PINN não funcionem, estas garantem funcionalidade básica
+keras==2.15.0  # Versão compatível com TensorFlow 2.15
