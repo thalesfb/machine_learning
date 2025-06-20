@@ -2,7 +2,7 @@
 # VERSÕES ATUALIZADAS PARA PYTHON 3.11 (Jun 2025)
 
 # Core Dependencies - VERSÕES ESTÁVEIS PARA PYTHON 3.11
-tensorflow>=2.15.0,<2.16.0  # Versão estável para Python 3.11
+tensorflow>=2.11  # Versão estável para Python 3.11
 numpy>=1.24.0,<1.26.0  # Versão estável para Python 3.11
 scipy>=1.11.0,<1.12.0  # Versão estável para Python 3.11
 scikit-learn>=1.3.0,<1.4.0  # Versão estável para Python 3.11
@@ -38,9 +38,6 @@ pyyaml>=6.0.0
 # Build Tools
 setuptools>=68.0.0  # Versão mínima para Python 3.11
 wheel>=0.40.0  # Para evitar problemas de build
-
-# Dependências alternativas para fallback
-keras>=2.15.0, < 3.0.0  # Versão compatível com TensorFlow 2.15
 
 # Dependências adicionais para otimização
 optuna>=3.4.0  # Para hyperparameter optimization
