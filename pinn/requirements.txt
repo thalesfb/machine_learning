@@ -40,7 +40,7 @@ setuptools>=68.0.0  # Versão mínima para Python 3.11
 wheel>=0.40.0  # Para evitar problemas de build
 
 # Dependências alternativas para fallback
-keras>=2.15.0  # Versão compatível com TensorFlow 2.15
+keras>=2.15.0, < 3.0.0  # Versão compatível com TensorFlow 2.15
 
 # Dependências adicionais para otimização
 optuna>=3.4.0  # Para hyperparameter optimization
