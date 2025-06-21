@@ -171,3 +171,15 @@ cython_debug/
 .pypirc
 
 test/
+
+# Large data files and caches
+*.csv
+*.npy
+*.pkl
+*.h5
+*.hdf5
+*.parquet
+*.feather
+data/
+models/
+*.cache
