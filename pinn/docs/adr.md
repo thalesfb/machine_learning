@@ -17,10 +17,10 @@ Esta seção documenta as decisões arquiteturais fundamentais do modelo PINN, f
 | ADR | Parâmetro | Valor Adotado | Justificativa Principal |
 |-----|-----------|---------------|------------------------|
 | **ADR-08** | Resistência R | 2.3 Ω | Faixa típica motores 0.5-2 HP |
-| **ADR-09** | Ruído medição | σ_T=0.5°C, σ_I=2% | Precisão sensores industriais |
+| **ADR-09** | Ruído medição | $\sigma_T = 0.5^\circ\mathrm{C}$, $\sigma_I = 2\%$ | Precisão sensores industriais |
 | **ADR-10** | Hiperparâmetros | 1000 épocas, lr=1e-3 | Convergência empírica PINNs |
 | **ADR-11** | Divisão dados | 70/20/10% | Padrão ML robustez estatística |
-| **ADR-12** | Condição inicial | T₀=T_amb | Realismo partida a frio |
+| **ADR-12** | Condição inicial | $T_0 = T_{\text{amb}}$ | Realismo partida a frio |
 | **ADR-13** | Convergência | Multi-critério | Robustez + eficiência |
 
 ### **🎯 Validação das Decisões**
@@ -40,9 +40,9 @@ Todas as ADRs documentadas foram:
 **Data:** 2024-12-20  
 **Contexto:**
 
-A dimensão característica \(L\) é fundamental em modelos térmicos pois define:
+A dimensão característica $L$ é fundamental em modelos térmicos pois define:
 - **Escala espacial** do domínio de solução da equação de calor
-- **Número de Biot** \(Bi = hL/k\), que determina se a condução interna é limitante
+- **Número de Biot** $Bi = hL/k$, que determina se a condução interna é limitante
 - **Gradientes térmicos** e distribuição de temperatura no motor
 - **Normalização adimensional** das coordenadas espaciais em PINNs
 
@@ -51,16 +51,16 @@ Adotar **L = 0.02 m (20 mm)** como dimensão característica.
 
 **Justificativa:**
 1. **Representação física realista**: 20 mm corresponde aproximadamente ao diâmetro típico da carcaça de motores elétricos de pequeno porte (0,5-2 HP), consistente com motores industriais de uso geral
-2. **Coerência com número de Biot**: Com \(h \approx 25 \text{ W/(m²·K)}\) (convecção natural ao ar) e \(k = 0.4 \text{ W/(m·K)}\), resulta em \(Bi = 1.25\), indicando regime de condução-convecção balanceado
+2. **Coerência com número de Biot**: Com $h \approx 25 \mathrm{ W/(m^2 \cdot K)}$ (convecção natural ao ar) e $k = 0.4 \mathrm{ W/(m \cdot K)}$, resulta em $Bi = 1.25$, indicando regime de condução-convecção balanceado
 3. **Literatura técnica**: Incropera & DeWitt (2008) sugerem usar o raio externo ou dimensão dominante para geometrias cilíndricas
 4. **Validação experimental**: Compatível com sensores de temperatura típicos (termopares tipo K) e acessibilidade para medição
 
 **Consequências:**
 - **✅ Gradientes realistas**: Permite variações de 10-15°C entre centro e superfície
 - **✅ Estabilidade numérica**: Número de Biot moderado evita instabilidades
-- **✅ Tempo característico**: \(\tau = L^2/\alpha \approx 3.6 \text{ min}\), compatível com dinâmica térmica de motores
+- **✅ Tempo característico**: $\tau = L^2/\alpha \approx 3.6 \text{ min}$, compatível com dinâmica térmica de motores
 - **⚠️ Limitação**: Se L fosse 10 mm, subestimaria gradientes; se 40 mm, superestimaria inércia térmica
-- **📊 Impacto nos coeficientes**: Mudança de ±50% em L alteraria \(Bi\) e \(\tau\) em ±50%, afetando resposta dinâmica
+- **📊 Impacto nos coeficientes**: Mudança de ±50% em L alteraria $Bi$ e $\tau$ em ±50%, afetando resposta dinâmica
 
 **Referências:**
 - Incropera, F.P. & DeWitt, D.P. (2008). *Heat and Mass Transfer*, 6ª ed.
@@ -80,23 +80,23 @@ As condições de contorno (BC) determinam como o calor é trocado na superfíci
 - Afetam **convergência** e **estabilidade** do treinamento PINN
 
 **Decisão:**  
-Adotar **condição de contorno de Robin (convectiva)**: \(-k \frac{\partial T}{\partial x}\big|_{x=L} = h(T_{\text{surf}} - T_{\infty})\)
+Adotar **condição de contorno de Robin (convectiva)**: $-k \frac{\partial T}{\partial x}\big|_{x=L} = h(T_{\text{surf}} - T_{\infty})$
 
 **Justificativa:**
 1. **Realismo físico**: Representa convecção natural/forçada na carcaça do motor
 2. **Estabilidade numérica**: Mais estável que Neumann puro, menos restritiva que Dirichlet
-3. **Coeficiente típico**: \(h = 10-50 \text{ W/(m²·K)}\) para convecção natural ao ar (Mills, 2019)
-4. **Medição prática**: \(T_{\infty}\) é facilmente mensurável (temperatura ambiente)
+3. **Coeficiente típico**: $h = 10-50 \mathrm{ W/(m^2 \cdot K)}$ para convecção natural ao ar (Mills, 2019)
+4. **Medição prática**: $T_{\infty}$ é facilmente mensurável (temperatura ambiente)
 
 **Consequências:**
 - **✅ Acoplamento realista**: Liga temperatura superficial com condições ambientais
 - **✅ Gradientes físicos**: Gera distribuições de temperatura coerentes
-- **⚠️ Sensibilidade**: Variações em \(h\) (±30%) afetam temperatura superficial em ±2-3°C
-- **🔧 Implementação PINN**: Requer diferenciação automática para calcular \(\frac{\partial T}{\partial x}\)
+- **⚠️ Sensibilidade**: Variações em $h$ (±30%) afetam temperatura superficial em ±2-3°C
+- **🔧 Implementação PINN**: Requer diferenciação automática para calcular $\frac{\partial T}{\partial x}$
 
 **Alternativas rejeitadas:**
-- Dirichlet \(T(L) = T_{\text{const}}\): Muito restritivo, não reflete variações ambientais
-- Neumann \(q = \text{const}\): Não captura dependência com \(\Delta T\)
+- Dirichlet $T(L) = T_{\text{const}}$: Muito restritivo, não reflete variações ambientais
+- Neumann $(q = \text{const})$: Não captura dependência com $\Delta T$
 
 ---
 
@@ -110,9 +110,9 @@ As propriedades termofísicas definem o comportamento de difusão térmica e sã
 
 **Decisão:**  
 Adotar propriedades equivalentes representativas de materiais de motores elétricos:
-- **Condutividade térmica**: \(k = 0.4 \text{ W/(m·K)}\)
-- **Densidade × calor específico**: \(\rho c_p = 3.8 \times 10^6 \text{ J/(m³·K)}\)  
-- **Difusividade térmica**: \(\alpha = k/(\rho c_p) = 1.1 \times 10^{-4} \text{ m²/s}\)
+- **Condutividade térmica**: $k = 0.4\ \mathrm{W/(m \cdot K)}$
+- **Densidade × calor específico**: $\rho c_p = 3.8 \times 10^6\ \mathrm{J/(m^3 \cdot K)}$
+- **Difusividade térmica**: $\alpha = k/(\rho c_p) = 1.1 \times 10^{-4}\ \mathrm{m^2/s}$
 
 **Justificativa:**
 1. **Materiais compostos**: Motor possui cobre (enrolamentos), ferro (núcleo), alumínio (carcaça) e isolantes
@@ -141,7 +141,7 @@ Adotar propriedades equivalentes representativas de materiais de motores elétri
 A dimensionalidade do domínio afeta diretamente a complexidade computacional, precisão física e viabilidade prática do modelo PINN.
 
 **Decisão:**  
-Implementar modelo **unidimensional (1D)** na direção radial, de \(x = 0\) (centro) até \(x = L\) (superfície).
+Implementar modelo **unidimensional (1D)** na direção radial, de $x = 0$ (centro) até $x = L$ (superfície).
 
 **Justificativa:**
 1. **Simplificação física válida**: Para motores cilíndricos com comprimento >> diâmetro, gradientes radiais dominam
@@ -156,7 +156,7 @@ Implementar modelo **unidimensional (1D)** na direção radial, de \(x = 0\) (ce
 - **🔮 Extensibilidade**: Base sólida para evolução para 2D/3D cilindricas
 
 **Alternativas futuras:**
-- **2D cilíndrica**: \((r, z)\) para capturar gradientes axiais  
+- **2D cilíndrica**: $(r, z)$ para capturar gradientes axiais  
 - **3D completa**: Para geometrias complexas ou análises detalhadas
 
 ---
@@ -174,10 +174,10 @@ A normalização das variáveis é crítica em PINNs para:
 
 **Decisão:**  
 Aplicar **MinMaxScaler** para normalizar entradas e saídas no intervalo [0, 1]:
-- **Espacial**: \(\tilde{x} = x / L\) 
-- **Temporal**: \(\tilde{t} = t / t_{\max}\)
-- **Temperatura**: \(\tilde{T} = (T - T_{\min}) / (T_{\max} - T_{\min})\)
-- **Corrente**: \(\tilde{I} = I / I_{\max}\)
+- **Espacial**: $\tilde{x} = x / L$ 
+- **Temporal**: $\tilde{t} = t / t_{\max}$
+- **Temperatura**: $\tilde{T} = (T - T_{\min}) / (T_{\max} - T_{\min})$
+- **Corrente**: $\tilde{I} = I / I_{\max}$
 
 **Justificativa:**
 1. **Robustez numérica**: Previne saturação em funções de ativação (tanh, sigmoid)
@@ -210,10 +210,10 @@ A função de perda multi-objetivo em PINNs deve balancear:
 
 **Decisão:**  
 Implementar perda composta com pesos unitários:
+```math
+L_{\text{total}} = \lambda_{\text{data}} \cdot L_{\text{data}} + \lambda_{\text{PDE}} \cdot L_{\text{PDE}} + \lambda_{\text{BC}} \cdot L_{\text{BC}}
 ```
-L_total = λ_data · L_data + λ_PDE · L_PDE + λ_BC · L_BC
-```
-Com pesos iniciais: \(\lambda_{\text{data}} = \lambda_{\text{PDE}} = \lambda_{\text{BC}} = 1.0\)
+Com pesos iniciais: $\lambda_{\text{data}} = \lambda_{\text{PDE}} = \lambda_{\text{BC}} = 1.0$
 
 **Justificativa:**
 1. **Equilíbrio inicial**: Pesos unitários evitam bias a priori entre objetivos
@@ -228,8 +228,8 @@ Com pesos iniciais: \(\lambda_{\text{data}} = \lambda_{\text{PDE}} = \lambda_{\t
 - **📊 Sensibilidade**: Variações de ±50% nos pesos podem afetar precisão final em ±10%
 
 **Estratégias de ajuste:**
-- **Adaptativo**: Reduzir \(\lambda_{\text{PDE}}\) se dados são abundantes
-- **Problema-específico**: Aumentar \(\lambda_{\text{BC}}\) para BCs críticas
+- **Adaptativo**: Reduzir $\lambda_{\text{PDE}}$ se dados são abundantes
+- **Problema-específico**: Aumentar $\lambda_{\text{BC}}$ para BCs críticas
 
 **Referências:**
 - Raissi, M. et al. (2019). Physics-informed neural networks
@@ -248,7 +248,7 @@ A arquitetura da rede neural determina a capacidade de aproximação e a eficiê
 **Decisão:**  
 Adotar rede **feedforward densa** com:
 - **6 camadas ocultas** × **64 neurônios**
-- **Ativação**: \(\tanh\) (camadas ocultas), linear (saída)
+- **Ativação**: `tanh` (camadas ocultas), linear (saída)
 - **Total**: ~25,000 parâmetros treináveis
 
 **Justificativa:**
@@ -275,7 +275,7 @@ Adotar rede **feedforward densa** com:
 **Data:** 2025-06-06  
 **Contexto:**
 
-A resistência elétrica define a **fonte de calor** na equação de calor através do efeito Joule (\(Q = I^2R\)), sendo fundamental para estabelecer a relação entre corrente elétrica e geração térmica.
+A resistência elétrica define a **fonte de calor** na equação de calor através do efeito Joule $Q = I^2R$, sendo fundamental para estabelecer a relação entre corrente elétrica e geração térmica.
 
 **Decisão:**  
 Adotar **R = 2.3 Ω** como resistência equivalente do motor.
@@ -298,7 +298,7 @@ Adotar **R = 2.3 Ω** como resistência equivalente do motor.
 
 ---
 
-#### **ADR-09: Parâmetros de Ruído para Validação (σ_T = 0.5°C, σ_I = 2%)**
+#### **ADR-09: Parâmetros de Ruído para Validação $\sigma_T = 0.5^\circ\mathrm{C}$, $\sigma_I = 2\%$**
 
 **Status:** ✅ Aceito  
 **Data:** 2025-06-06  
@@ -308,8 +308,8 @@ Os parâmetros de ruído simulam **incertezas de medição** realistas e testam 
 
 **Decisão:**  
 Adotar ruído Gaussiano com:
-- **Temperatura**: \(\sigma_T = 0.5°C\) (desvio padrão absoluto)
-- **Corrente**: \(\sigma_I = 2\%\) (percentual do valor medido)
+- **Temperatura**: $\sigma_T = 0.5^\circ\mathrm{C}$ (desvio padrão absoluto)
+- **Corrente**: $\sigma_I = 2\%$ (percentual do valor medido)
 
 **Justificativa:**
 1. **Precisão de sensores**: Termopares tipo K têm precisão ±0.75°C (IEC 60584)
@@ -403,13 +403,13 @@ Implementar divisão estratificada:
 A condição inicial térmica afeta a **resposta transiente** do modelo e deve refletir condições realistas de **partida a frio** do motor.
 
 **Decisão:**  
-Adotar **condição inicial uniforme**: \(T(x,0) = T_{\text{ambiente}}\) para todo o domínio espacial.
+Adotar **condição inicial uniforme**: $T(x,0) = T_{\text{ambiente}}$ para todo o domínio espacial.
 
 **Justificativa:**
 1. **Realismo operacional**: Motor em repouso está em equilíbrio térmico com ambiente
 2. **Condição bem-posta**: Matematicamente consistente com PDE parabólica
 3. **Simplicidade**: Evita complexidade desnecessária para modelo 1D
-4. **Medição prática**: \(T_{\text{ambiente}}\) é facilmente mensurável
+4. **Medição prática**: $T_{\text{ambiente}}$ é facilmente mensurável
 
 **Consequências:**
 - **✅ Realismo**: Simula partida real do motor
@@ -419,7 +419,7 @@ Adotar **condição inicial uniforme**: \(T(x,0) = T_{\text{ambiente}}\) para to
 
 **Casos especiais:**
 - **Parada recente**: Requer ajuste para temperatura residual
-- **Ambiente variável**: Considera \(T_{\text{amb}}(t)\) se disponível
+- **Ambiente variável**: Considera $T_{\text{amb}}(t)$ se disponível
 
 ---
 
@@ -433,7 +433,7 @@ Os critérios de convergência determinam **quando parar o treinamento** e garan
 
 **Decisão:**  
 Implementar critérios múltiplos:
-- **Early stopping**: δ_loss < 1e-4 por 50 épocas consecutivas
+- **Early stopping**: $δ_loss < 1e-4$ por 50 épocas consecutivas
 - **Gradiente**: ||∇L|| < 1e-6 (convergência de primeira ordem)
 - **Residual PDE**: |R_PDE| < 1e-3 (cumprimento da física)
 - **Timeout**: Máximo 1000 épocas (modo completo)
@@ -484,7 +484,7 @@ Esta seção analisa os impactos interconectados das decisões documentadas e su
 | **L** | ±50% | **Bi** e **τ** variam ±50% | Recalibrar α, h |
 | **α** | ±20% | **Tempo resposta** ±20% | Ajuste via PINN |
 | **R** | ±30% | **Potência térmica** ±51% | Medição experimental |
-| **λ_weights** | ±50% | **MAE final** ±10% | Grid search |
+| **`λ_weights`** | ±50% | **MAE final** ±10% | Grid search |
 | **h (BC)** | ±30% | **T_superfície** ±2-3°C | Correlações empíricas |
 
 ---
@@ -492,17 +492,17 @@ Esta seção analisa os impactos interconectados das decisões documentadas e su
 ### **🎯 Validação da Coerência Física**
 
 **✅ Verificações Dimensionais**
-- **Equação de calor**: [∂T/∂t] = [K] = [1/s] ✓
-- **Termo fonte**: [I²R/(ρcp)] = [W/m³] / [J/(m³·K)] = [K/s] ✓  
-- **BC Robin**: [k ∂T/∂x] = [h(T-T∞)] = [W/m²] ✓
+- **Equação de calor**: $[∂T/∂t] = [K] = [1/s]$ ✓
+- **Termo fonte**: $[I²R/(ρcp)] = [W/m³] / [J/(m³·K)] = [K/s]$ ✓  
+- **BC Robin**: $[k ∂T/∂x] = [h(T-T_{\infty})] = [W/m²]$ ✓
 
 **✅ Ordens de Grandeza**
 - **Gradientes**: 10-15°C em 20mm → **~500-750 K/m** (típico para motores)
-- **Potência específica**: 2-230 W / (π×0.01²×0.1 m³) → **~6×10⁴-7×10⁶ W/m³** (realista)
-- **Convecção**: h=25 W/(m²K) para ar natural (literatura: 10-50 W/(m²K)) ✓
+- **Potência específica**: 2-230 W / ($\pi \times 0.01^2 \times 0.1$ m³) → **~6×10⁴-7×10⁶ W/m³** (realista)
+- **Convecção**: $h=25 \text{ W/(m²K)}$ para ar natural (literatura: 10-50 W/(m²K)) ✓
 
 **✅ Limites Físicos**
-- **Estabilidade CFL**: αΔt/Δx² < 0.5 verificado para discretização
+- **Estabilidade CFL**: $\alpha \Delta t / \Delta x^2 < 0.5$ verificado para discretização
 - **Convergência**: Multiple criteria garante solução física
 - **Causalidade**: Condições iniciais + BC determinam evolução única
 
@@ -514,17 +514,17 @@ Esta seção analisa os impactos interconectados das decisões documentadas e su
 - **MAE objetivo**: ≤ 5°C ✅
 - **Tempo treinamento**: 15-30 min (modo completo)
 - **Convergência**: ~500-800 épocas
-- **Robustez**: Mantém performance com ruído σ_T=0.5°C
+- **Robustez**: Mantém performance com ruído $\sigma_T=0.5^\circ\mathrm{C}$
 
 **Cenário Conservador (Tolerâncias Máximas)**
 - **MAE degradado**: 6-8°C (ainda aceitável)
 - **Tempo aumentado**: 45-60 min
 - **Convergência lenta**: ~1000 épocas
-- **Sensibilidade**: Requer ajuste fino de λ_weights
+- **Sensibilidade**: Requer ajuste fino de `λ_weights`
 
 **Cenário Crítico (Condições Adversas)**
 - **MAE limite**: 8-10°C (revisão necessária)
-- **Instabilidade**: Divergência por λ_PDE inadequado
+- **Instabilidade**: Divergência por ```λ_PDE``` inadequado
 - **Overfitting**: Ruído baixo + dados limitados
 
 ---
