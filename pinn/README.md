@@ -1,7 +1,7 @@
 # ⚙️🔥 Estimativa de Temperatura Interna em Motores Elétricos via Physics‑Informed Neural Networks (PINNs)
 
 > **Trabalho Final – Redes Neurais Artificiais e Deep Learning**  
-> **Autor:** Thales Ferreira • **Validação prévia:** 09 / 06 • **Entrega final:** 16 / 06
+> **Autor:** Thales Ferreira • **Validação prévia:** 16 / 06 • **Entrega final:** 23 / 06
 
 ---
 
@@ -29,13 +29,13 @@ Sobreaquecimento do enrolamento é uma das principais causas de falhas prematura
 ---
 
 ## 📚 Fundamentação Teórica
-### 2.1 Physics‑Informed Neural Networks
+### Physics‑Informed Neural Networks
 PINNs foram introduzidas por Raissi *et al.* [1], [2] para incorporar **leis de conservação** diretamente na função de perda, dispensando malhas numéricas clássicas. Surveys recentes destacam avanços em balanceamento adaptativo de perdas, generalização e aceleração [3], [4], [11].
 
-### 2.2 Transferência de Calor em Máquinas Elétricas
+### Transferência de Calor em Máquinas Elétricas
 Modelos térmicos de motores geralmente combinam elementos concentrados (Lumped‑Parameter Thermal Networks) e métodos numéricos [5]. Estudos recentes demonstraram que PINNs conseguem igualar ou superar esses modelos, mesmo com dados esparsos, em casos de motores de indução e PMSM [6]–[9].
 
-### 2.3 Ferramentas de Implementação
+### Ferramentas de Implementação
 Bibliotecas como **DeepXDE** [10] e **SciANN** [12] fornecem APIs de alto nível para PINNs, possibilitando o uso de autograd em TensorFlow/PyTorch e rápida prototipagem. Outras iniciativas, como **PINE** [4] e **A‑PINN survey** [11], exploram otimização evolutiva e meta‑aprendizado para contornar rigidez numérica.
 
 > **Síntese:** A literatura confirma a pertinência dos PINNs para problemas térmicos em motores, mas poucos estudos tratam de **linhas de produção contínua** — lacuna que este projeto aborda.
@@ -75,6 +75,9 @@ Após o download, o dataset é dividido em subconjuntos de **validação** e **t
 4. **Normalização:** Min‑Max \([0,1]\).  
 5. **Divisão temporal:** 70 % treino, 20 % validação, 10 % teste.
 
+### Geração de Dados Sintéticos
+A função `generate_realistic_motor_data()` foi desenvolvida para gerar dados sintéticos que se aproximem das condições reais de operação de um motor elétrico. A função gera dados de temperatura interna, corrente e temperatura da superfície do motor, com ruído aditivo e normalização.
+
 ---
 
 ## 🏗️ Arquitetura PINN
@@ -95,7 +98,7 @@ Após o download, o dataset é dividido em subconjuntos de **validação** e **t
 | **E2** | Ajustar parâmetros \(α,R\) via fine‑tuning | Real (validação) |
 | **E3** | Inferência pura em turno inédito | Real (teste) |
 
-Métricas: **MAE**, **RMSE**, **ρ de Pearson**.
+Métricas: **MAE**, **RMSE**, **ρ de Pearson**, **r de Pearson**
 
 ---
 
@@ -105,7 +108,7 @@ escolhas documentadas em [docs/adr.md](./docs/adr.md). O dataset **Electric
 Motor Temperature** é utilizado nas etapas de validação e teste, sempre com a
 divisão temporal **70 % treino / 20 % validação / 10 % teste**.
 
-### 7.1 Configuração das Execuções
+### Configuração das Execuções
 Os parâmetros físicos de base — \(L = 20\,\text{mm}\), \(R = 2.3\,\Omega\) e
 \(\alpha = 1.1\times10^{-4}\,\text{m²/s}\) — foram fixados conforme as ADRs.
 Cada experimento é iniciado pela função `run_experiment()` do notebook
@@ -118,16 +121,16 @@ modelo e os resultados com `save_experiment_results`, garantindo
 reprodutibilidade das análises.
 
 
-### 7.2 Modo Rápido
+### Modo Rápido
 Para validar rapidamente o pipeline, os três experimentos (E1, E2 e E3) podem
 ser executados com número reduzido de épocas. Esse modo permite verificar se o
 treinamento ocorre sem erros antes da execução completa.
 
-### 7.3 Tabela Comparativa de Resultados
+### Tabela Comparativa de Resultados
 Após a execução, os valores de **MAE**, **RMSE** e **coeficiente de Pearson** são
 organizados em uma tabela que resume o desempenho dos experimentos.
 
-### 7.4 Execução Completa (Opcional)
+### Execução Completa (Opcional)
 Para resultados mais robustos, recomenda-se rodar o notebook com todas as épocas
 planejadas (1000) e registrar a tabela de métricas final.
 
@@ -146,6 +149,7 @@ planejadas (1000) e registrar a tabela de métricas final.
 ---
 
 ## 🚀 Reprodutibilidade
+É recomendado usar um ambiente virtual `.venv` ou `conda` com python 3.11
 Todo o código está centralizado no **notebook `pinn_motor_thermal.ipynb`**. Para executá‑lo:
 
 ```bash
@@ -183,10 +187,10 @@ jupyter pinn_motor_thermal.ipynb
 
 [10] E. Haghighat and R. Juanes, “SciANN: A Keras/TensorFlow wrapper for scientific computations and physics‑informed deep learning using artificial neural networks,” *Computer Methods in Applied Mechanics and Engineering*, vol. 373, art. 113552, 2021, doi: https://doi.org/10.1016/j.cma.2020.113552.  
 
-[11] E. Torres, J. Schiefer, and M. Niepert, “Adaptive physics‑informed neural networks: A survey,” *arXiv* preprint arXiv:2503.18181, 2025. Available: https://arxiv.org/abs/2503.18181  
+[11] E. Torres, J. Schiefer, and M. Niepert, "Adaptive physics‑informed neural networks: A survey," *arXiv* preprint arXiv:2503.18181, 2025. Available: https://arxiv.org/abs/2503.18181  
 
-[12] E. Haghighat and R. Juanes, *SciANN Documentation*, 2024. [Online]. Available: https://www.sciann.com/ 
+[12] E. Haghighat and R. Juanes, *SciANN Documentation*, 2024. [Online]. Available: https://www.sciann.com/ 
 
 ---
 
-> _“A física ensina; a rede aprende.”_
+> _"A física ensina; a rede aprende."_
