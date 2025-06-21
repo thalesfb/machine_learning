@@ -74,10 +74,12 @@ Este repositório contém notebooks e scripts relacionados a diferentes técnica
 - [`introduction.ipynb`](./introduction.ipynb): Notebook com exercícios de revisão de conceitos de machine learning.
 - [`AM_Atividade_Avaliativa_1.ipynb`](./AM_Atividade_Avaliativa_1.ipynb): Atividade avaliativa sobre Machine Learning.
 
-### ⚙️ Physics-Informed Neural Networks (PINNs)
+### ∂ Physics-Informed Neural Networks (PINNs)
 
-- [`pinn_motor_thermal.ipynb`](./pinn/pinn_motor_thermal.ipynb): Implementação de Physics-Informed Neural Networks (PINNs) para resolver equações diferenciais parciais.
+- [`pinn_motor_thermal.ipynb`](./pinn/src/pinn_motor_thermal.ipynb): Implementação de Physics-Informed Neural Networks (PINNs) para resolver equações diferenciais parciais.
 - [`README.md`](./pinn/README.md): Detalhes sobre a implementação e uso de PINNs.
+- [`requirements.txt`](./pinn/requirements.txt): Requisitos para o projeto.
+- [`environment.yml`](./pinn/environment.yml): Ambiente virtual para o projeto.
 
 ### 🎓 Seminários
 
