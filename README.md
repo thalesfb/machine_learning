@@ -22,6 +22,17 @@ Este repositório contém notebooks e scripts relacionados a diferentes técnica
 │   ├── efficientnet_fine_tuned.h5
 │   ├── efficientnet_initial.h5
 │   └── Lecun98.pdf
+├── pinn
+│   ├── data
+│   ├── docs
+│   ├── models
+│   ├── plots
+│   ├── results
+│   ├── src
+│   │   ├── pinn_motor_thermal.ipynb
+│   ├── environment.yml
+│   ├── README.md
+│   ├── requirements.txt
 ├── rnn
 │   ├── models/
 │   │   ├── lstm_improved_model.h5
@@ -151,7 +162,7 @@ Uso de redes recorrentes do tipo LSTM para prever a temperatura mínima do dia s
 
 ### Estimativa de Temperatura em Motores com PINNs
 
-Uso de Physics-Informed Neural Networks para prever a temperatura interna de motores elétricos a partir de medições de corrente e temperatura superficial. Projeto final do curso de Redes Neurais Artificiais e Deep Learning.
+Uso de Physics-Informed Neural Networks para prever a temperatura interna de motores elétricos a partir de medições de corrente e temperatura superficial. Projeto final do curso de Tópicos Especiais em Computação.
 
 ## 📝 Licença
 
