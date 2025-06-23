@@ -43,7 +43,7 @@ Bibliotecas como **DeepXDE** [10] e **SciANN** [12] fornecem APIs de alto nível
 ---
 
 ## 💾 Base de Dados & Domínio do Problema
-| Fonte | Tipo | Atributos (1 Hz) |
+| Fonte | Tipo | Atributos (1 Hz) |
 |-------|------|------------------|
 | **Sintético** | Solução numérica da equação de calor 1‑D | _t, I(t), T_surface(t), T_internal(t)_ |
 | **Real ("Electric Motor Temperature")** | Kaggle: wkirgsn/electric-motor-temperature | _u_d, u_q, i_d, i_q, motor_speed, torque, pm, stator_yoke, stator_winding, ambient, coolant_ |
@@ -69,11 +69,11 @@ Após o download, o dataset é dividido em subconjuntos de **validação** e **t
 ---
 
 ## 🛠️ Pré‑processamento & Geração de Dados Sintéticos
-1. **Parâmetros aproximados:** \(R=2.3 Ω\), \(α=1.1×10^{-4} m²/s\), \(L=0.02 m\).  
+1. **Parâmetros aproximados:** \(R=0.8 Ω\), \(α=1.1×10^{-4} m²/s\), \(L=0.04 m\).  
 2. **Perfis de corrente:** degraus, rampas, e ciclos extraídos de registros reais.  
-3. **Ruído aditivo:** \(N(0,0.5 °C)\) em temperaturas; ±2 % em corrente.  
+3. **Ruído aditivo:** \(N(0,0.5 °C)\) em temperaturas; ±2 % em corrente.  
 4. **Normalização:** Min‑Max \([0,1]\).  
-5. **Divisão temporal:** 70 % treino, 20 % validação, 10 % teste.
+5. **Divisão temporal:** 70 % treino, 20 % validação, 10 % teste.
 
 ### Geração de Dados Sintéticos
 A função `generate_realistic_motor_data()` foi desenvolvida para gerar dados sintéticos que se aproximem das condições reais de operação de um motor elétrico. A função gera dados de temperatura interna, corrente e temperatura da superfície do motor, com ruído aditivo e normalização.
@@ -87,7 +87,7 @@ A função `generate_realistic_motor_data()` foi desenvolvida para gerar dados s
 | **Hidden** | 6 × 64 neurônios, `tanh` |
 | **Saída**  | \(u_θ(x,t)\) (temperatura) |
 | **Loss**   | \(𝓛 = λ_f‖PDE‖² + λ_b‖BC‖² + λ_d‖Dados‖²\) |
-| **Optimizador** | Adam 1e‑3 → L‑BFGS |
+| **Optimizador** | Adam 1e‑3 → L‑BFGS |
 
 ---
 
@@ -95,8 +95,8 @@ A função `generate_realistic_motor_data()` foi desenvolvida para gerar dados s
 | Experimento | Objetivo | Dados |
 |-------------|----------|-------|
 | **E1** | Verificar se o PINN aprende a PDE (sintético) | Sintético |
-| **E2** | Ajustar parâmetros \(α,R\) via fine‑tuning | Real (validação) |
-| **E3** | Inferência pura em turno inédito | Real (teste) |
+| **E2** | Ajustar parâmetros \(α,R\) via fine‑tuning | Real (validação) |
+| **E3** | Inferência pura em turno inédito | Real (teste) |
 
 Métricas: **MAE**, **RMSE**, **ρ de Pearson**, **r de Pearson**
 
@@ -106,10 +106,10 @@ Métricas: **MAE**, **RMSE**, **ρ de Pearson**, **r de Pearson**
 Os experimentos seguem o planejamento descrito na tabela anterior e respeitam as
 escolhas documentadas em [docs/adr.md](./docs/adr.md). O dataset **Electric
 Motor Temperature** é utilizado nas etapas de validação e teste, sempre com a
-divisão temporal **70 % treino / 20 % validação / 10 % teste**.
+divisão temporal **70 % treino / 20 % validação / 10 % teste**.
 
 ### Configuração das Execuções
-Os parâmetros físicos de base — \(L = 20\,\text{mm}\), \(R = 2.3\,\Omega\) e
+Os parâmetros físicos de base — \(L = 40\,\text{mm}\), \(R = 0.8\,\Omega\) e
 \(\alpha = 1.1\times10^{-4}\,\text{m²/s}\) — foram fixados conforme as ADRs.
 Cada experimento é iniciado pela função `run_experiment()` do notebook
 `pinn_motor_thermal.ipynb`.
@@ -160,34 +160,34 @@ source .venv/bin/activate
 jupyter pinn_motor_thermal.ipynb
 ```
 
-> **Google Colab:** basta clicar em `Open in Colab` no topo do notebook.
+> **Google Colab:** basta clicar em `Open in Colab` no topo do notebook.
 
 ---
 
 ## 📚 Referências
-> **Formato ABNT (NBR 6023:2018)**  
+> **Formato ABNT (NBR 6023:2018)**  
 
-[1] M. Raissi, P. Perdikaris, and G. E. Karniadakis, “Physics‑informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations,” *Journal of Computational Physics*, vol. 378, pp. 686–707, 2019, doi: https://doi.org/10.1016/j.jcp.2018.10.045.  
+[1] M. Raissi, P. Perdikaris, and G. E. Karniadakis, "Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations," *Journal of Computational Physics*, vol. 378, pp. 686–707, 2019, doi: https://doi.org/10.1016/j.jcp.2018.10.045.  
 
-[2] M. Raissi, P. Perdikaris, and G. E. Karniadakis, “Physics‑informed deep learning (Part I): Data‑driven solutions of nonlinear partial differential equations,” *arXiv* preprint arXiv:1711.10561, 2017. Available: https://arxiv.org/abs/1711.10561  
+[2] M. Raissi, P. Perdikaris, and G. E. Karniadakis, "Physics-informed deep learning (Part I): Data-driven solutions of nonlinear partial differential equations," *arXiv* preprint arXiv:1711.10561, 2017. Available: https://arxiv.org/abs/1711.10561  
 
-[3] S. Cuomo *et al.*, “Scientific machine learning through physics‑informed neural networks: Where we are and what’s next,” *Journal of Scientific Computing*, vol. 92, art. 88, 2022, doi: https://doi.org/10.1007/s10915-022-01939-z.  
+[3] S. Cuomo *et al.*, "Scientific machine learning through physics-informed neural networks: Where we are and what's next," *Journal of Scientific Computing*, vol. 92, art. 88, 2022, doi: https://doi.org/10.1007/s10915-022-01939-z.  
 
-[4] Y. Zhang *et al.*, “Physics‑informed neuro‑evolution (PINE): A survey and prospects,” *arXiv* preprint arXiv:2501.06572, 2025. Available: https://arxiv.org/abs/2501.06572  
+[4] Y. Zhang *et al.*, "Physics-informed neuro-evolution (PINE): A survey and prospects," *arXiv* preprint arXiv:2501.06572, 2025. Available: https://arxiv.org/abs/2501.06572  
 
-[5] J. L. Öberg, *Physics‑Informed Neural Network for Thermal Modeling of an Electric Motor Drive*, M.S. thesis, Chalmers Univ. of Technology, Gothenburg, Sweden, 2023. Available: https://odr.chalmers.se/items/03b63aad-812d-4ec3-9679-1aa65981eff6  
+[5] J. L. Öberg, *Physics-Informed Neural Network for Thermal Modeling of an Electric Motor Drive*, M.S. thesis, Chalmers Univ. of Technology, Gothenburg, Sweden, 2023. Available: https://odr.chalmers.se/items/03b63aad-812d-4ec3-9679-1aa65981eff6  
 
-[6] T. Nguyen, J. Lee, and K. Park, “End‑to‑end differentiable physics temperature estimation for permanent‑magnet synchronous motor drives,” *Sensors*, vol. 23, no. 4, p. 174, 2023, doi: https://doi.org/10.3390/s23040174.  
+[6] T. Nguyen, J. Lee, and K. Park, "End-to-end differentiable physics temperature estimation for permanent-magnet synchronous motor drives," *Sensors*, vol. 23, no. 4, p. 174, 2023, doi: https://doi.org/10.3390/s23040174.  
 
-[7] L. Eriksson, *Online Temperature Prediction in Electric Machines Using PINNs*, M.S. thesis, KTH Royal Institute of Technology, Stockholm, Sweden, 2024. Available: https://kth.diva-portal.org/smash/get/diva2:1749477/FULLTEXT02.pdf  
+[7] L. Eriksson, *Online Temperature Prediction in Electric Machines Using PINNs*, M.S. thesis, KTH Royal Institute of Technology, Stockholm, Sweden, 2024. Available: https://kth.diva-portal.org/smash/get/diva2:1749477/FULLTEXT02.pdf  
 
-[8] L. Glass, W. Hilali, and O. Nelles, “An input‑to‑state stable virtual sensor for electric motor rotor temperature,” *IFAC‑PapersOnLine*, vol. 56, no. 1, pp. 240–245, 2023, doi: https://doi.org/10.1016/j.ifacol.2023.10.040.  
+[8] L. Glass, W. Hilali, and O. Nelles, "An input-to-state stable virtual sensor for electric motor rotor temperature," *IFAC-PapersOnLine*, vol. 56, no. 1, pp. 240–245, 2023, doi: https://doi.org/10.1016/j.ifacol.2023.10.040.  
 
-[9] L. Lu, X. Meng, Z. Mao, and G. E. Karniadakis, “DeepXDE: A deep learning library for solving differential equations,” *SIAM Review*, vol. 63, no. 1, pp. 208–228, 2021, doi: https://doi.org/10.1137/19M1274067.  
+[9] L. Lu, X. Meng, Z. Mao, and G. E. Karniadakis, "DeepXDE: A deep learning library for solving differential equations," *SIAM Review*, vol. 63, no. 1, pp. 208–228, 2021, doi: https://doi.org/10.1137/19M1274067.  
 
-[10] E. Haghighat and R. Juanes, “SciANN: A Keras/TensorFlow wrapper for scientific computations and physics‑informed deep learning using artificial neural networks,” *Computer Methods in Applied Mechanics and Engineering*, vol. 373, art. 113552, 2021, doi: https://doi.org/10.1016/j.cma.2020.113552.  
+[10] E. Haghighat and R. Juanes, "SciANN: A Keras/TensorFlow wrapper for scientific computations and physics-informed deep learning using artificial neural networks," *Computer Methods in Applied Mechanics and Engineering*, vol. 373, art. 113552, 2021, doi: https://doi.org/10.1016/j.cma.2020.113552.  
 
-[11] E. Torres, J. Schiefer, and M. Niepert, "Adaptive physics‑informed neural networks: A survey," *arXiv* preprint arXiv:2503.18181, 2025. Available: https://arxiv.org/abs/2503.18181  
+[11] E. Torres, J. Schiefer, and M. Niepert, "Adaptive physics-informed neural networks: A survey," *arXiv* preprint arXiv:2503.18181, 2025. Available: https://arxiv.org/abs/2503.18181  
 
 [12] E. Haghighat and R. Juanes, *SciANN Documentation*, 2024. [Online]. Available: https://www.sciann.com/ 
 
